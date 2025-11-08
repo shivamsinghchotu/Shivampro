@@ -1,101 +1,111 @@
-<!doctype html>
-<html lang="hi">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login → Redirect</title>
+  <title>NEXXXX OP 🚀 - Login</title>
   <style>
-    body{ margin:0; font-family:Arial, Helvetica, sans-serif; background:#021623; color:#e6fbf6; display:flex; align-items:center; justify-content:center; height:100vh; padding:16px;}
-    .card{ width:100%; max-width:420px; background:rgba(0,0,0,0.35); padding:24px; border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,0.6); border:1px solid rgba(0,255,200,0.03);}
-    h2{ text-align:center; margin:0 0 10px 0; letter-spacing:2px;}
-    p.sub{ text-align:center; color:#9fbcbc; margin:8px 0 18px;}
-    .input{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:rgba(0,0,0,0.25); color:#dff; margin-bottom:12px; font-size:15px; }
-    .btn{ width:100%; padding:12px; border-radius:10px; border:0; font-weight:700; background:linear-gradient(90deg,#00f0c0,#00b8ff); color:#012; cursor:pointer; }
-    .msg{ text-align:center; margin-top:12px; color:#ffdede; display:none;}
-    .muted{ text-align:center; color:#9fbcbc; margin-top:8px; font-size:14px;}
+    :root{--bg1:#00111a;--bg2:#001f2b;--accent1:#00ffc3;--accent2:#00aaff;}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; font-family:"Poppins",sans-serif;
+      background:
+        radial-gradient(800px 400px at 10% 20%, rgba(0,200,150,0.06), transparent 10%),
+        radial-gradient(700px 350px at 85% 80%, rgba(0,160,255,0.04), transparent 10%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#e6f7f1; display:flex; align-items:center; justify-content:center; padding:28px;
+    }
+    .help-btn{position:fixed; top:18px; right:18px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border:none; color:#001; font-weight:700; padding:8px 14px; border-radius:22px; cursor:pointer;}
+    .card{width:360px; max-width:92vw; background:rgba(0,20,40,0.9); border-radius:16px; padding:28px; position:relative; box-shadow:0 12px 30px rgba(3,15,20,0.6); border:1px solid rgba(0,200,160,0.06); text-align:center;}
+    .brand{font-size:26px; letter-spacing:3px; color:var(--accent1); font-weight:800; margin-bottom:6px;}
+    .sub{color:rgba(200,220,215,0.6); font-size:13px; margin-bottom:16px;}
+    .input{width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:rgba(255,255,255,0.04); color:#eaf9f2; outline:none; font-size:14px; margin:8px 0;}
+    .input::placeholder{color:rgba(230,247,241,0.45)}
+    .input:focus{box-shadow:0 8px 28px rgba(0,170,150,0.08); border:1px solid rgba(0,200,160,0.12)}
+    .btn-login{width:100%; padding:12px; margin-top:6px; border-radius:10px; border:none; cursor:pointer; font-weight:700; font-size:15px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#001;}
+    .links{margin-top:12px; font-size:13px; color:rgba(200,220,215,0.6);}
+    .links a{color:var(--accent1); cursor:pointer; text-decoration:none; font-weight:600}
+    @media (max-width:420px){ .card{padding:20px} .brand{font-size:22px} }
   </style>
 </head>
 <body>
-  <div class="card" role="main" aria-labelledby="title">
-    <h2 id="title">NEXXXX OP</h2>
-    <p class="sub">Enter your Username and Access Key to continue</p>
 
-    <input id="username" class="input" placeholder="Enter Username" autocomplete="username" />
-    <input id="accessKey" class="input" placeholder="Enter Access Key" type="password" autocomplete="current-password" />
+  <button class="help-btn" onclick="openHelp()">HELP 📘</button>
 
-    <button id="loginBtn" class="btn">LOGIN</button>
+  <div class="card" role="main" aria-labelledby="brand-title">
+    <div id="brand-title" class="brand">NEXXXX OP <span style="font-size:18px; transform:translateY(-1px)">🚀</span></div>
+    <div class="sub">Enter your Username and Access Key to continue</div>
 
-    <div id="message" class="msg" role="status" aria-live="polite"></div>
-    <div class="muted">Help: Use any values if ALWAYS_REDIRECT = true</div>
+    <input id="username" class="input" type="text" placeholder="Enter Username" autocomplete="username">
+    <input id="accesskey" class="input" type="password" placeholder="Enter Access Key" autocomplete="current-password">
+    <button class="btn-login" onclick="login()">LOGIN</button>
+
+    <div class="links" style="margin-top:10px">Forgot Key? <a onclick="resetKey()">Reset</a></div>
   </div>
 
   <script>
-    // ===== CONFIGURATION =====
-    // Set to true to ALWAYS redirect on LOGIN click (ignores credentials)
-    // Set to false to only redirect when correct fixed credentials are entered.
-    const ALWAYS_REDIRECT = true;
+    // ===== CONFIGURE HERE =====
+    const CORRECT_USERNAME = "NEXXOP2025";
+    const CORRECT_ACCESS_KEY = "OPKEY786";
 
-    // If ALWAYS_REDIRECT is false, these credentials will be required:
-    const FIXED_USERNAME = 'shivam';
-    const FIXED_PASSWORD = 'SHIVAM5678';
+    // Put the external website URL you want to go to after successful login.
+    // Example formats:
+    // "https://example.com"
+    // "https://t.me/YourTelegramGroup"
+    // "https://www.yoursite.com/path"
+    const REDIRECT_URL = "https://example.com"; // <-- CHANGE THIS to your target site
 
-    // The website to go to on successful login:
-    const REDIRECT_URL = 'https://www.example.com';
-    // If you prefer to open in a new tab, set OPEN_IN_NEW_TAB = true
-    const OPEN_IN_NEW_TAB = false;
-    // ===== END CONFIG =====
+    // ===== LOGIC =====
+    function login(){
+      const u = document.getElementById('username').value.trim();
+      const k = document.getElementById('accesskey').value.trim();
 
-    const el = id => document.getElementById(id);
-    const userInput = el('username');
-    const keyInput = el('accessKey');
-    const loginBtn = el('loginBtn');
-    const message = el('message');
-
-    function showMessage(txt, err=false){
-      message.textContent = txt;
-      message.style.display = 'block';
-      message.style.color = err ? '#ffd6d6' : '#d2ffef';
-    }
-
-    function doRedirect(){
-      if (OPEN_IN_NEW_TAB) {
-        window.open(REDIRECT_URL, '_blank', 'noopener');
-      } else {
-        window.location.href =https://shivamsinghchotu.github.io/Shivampro/;
-      }
-    }
-
-    loginBtn.addEventListener('click', () => {
-      message.style.display = 'none';
-      const u = userInput.value.trim();
-      const k = keyInput.value.trim();
-
-      if (ALWAYS_REDIRECT) {
-        // immediate redirect (you may show a quick message)
-        showMessage('Redirecting...'); 
-        setTimeout(doRedirect, 300); // small delay so message visible
+      if(!u || !k){
+        alert("Please enter username and access key.");
         return;
       }
 
-      // If not always redirect, require fixed credentials
-      if (!u || !k) {
-        showMessage('Username और Access Key दर्ज करें।', true);
-        return;
-      }
-
-      // check fixed credentials
-      if (u === FIXED_USERNAME && k === FIXED_PASSWORD) {
-        showMessage('Login सफल — redirect कर रहे हैं...');
-        setTimeout(doRedirect, 500);
+      if(u === CORRECT_USERNAME && k === CORRECT_ACCESS_KEY){
+        document.querySelector('.btn-login').textContent = "Redirecting...";
+        // short delay for UX, then redirect to external site
+        setTimeout(()=> {
+          // If you want to pass username to the external site as a param (optional), uncomment next line:
+          // window.location.href = REDIRECT_URL + "?user=" + encodeURIComponent(u);
+          window.location.href = REDIRECT_URL;
+        }, 500);
       } else {
-        showMessage('Username या Access Key गलत है।', true);
+        shakeCard();
+        alert("Incorrect Username or Access Key!");
       }
-    });
+    }
 
-    // allow Enter key to submit
-    [userInput, keyInput].forEach(inp => {
-      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+    function resetKey(){
+      document.getElementById('username').value = "";
+      document.getElementById('accesskey').value = "";
+      alert("Fields cleared. Contact admin to get a new access key.");
+    }
+
+    function openHelp(){
+      alert("Help:\n• Username: " + CORRECT_USERNAME + "\n• Access Key: " + CORRECT_ACCESS_KEY + "\n\nChange REDIRECT_URL variable in the script to the website you want to open after login.");
+    }
+
+    function shakeCard(){
+      const el = document.querySelector('.card');
+      el.style.transition = "transform 0.08s";
+      el.style.transform = "translateX(-8px)";
+      setTimeout(()=> el.style.transform = "translateX(8px)", 80);
+      setTimeout(()=> el.style.transform = "translateX(-5px)", 160);
+      setTimeout(()=> el.style.transform = "translateX(5px)", 240);
+      setTimeout(()=> { el.style.transform = ""; el.style.transition=""; }, 320);
+    }
+
+    // Submit on Enter
+    document.addEventListener('keydown', function(e){
+      if(e.key === "Enter"){
+        const focused = document.activeElement;
+        if(focused && (focused.id === 'username' || focused.id === 'accesskey')) login();
+      }
     });
   </script>
 </body>
-</html>}
+</html>
