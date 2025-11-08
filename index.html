@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVAM PRO PANNL</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{
+  height:100vh;
+  background: radial-gradient(circle at center,#000000 0%,#0b0602 100%);
+  color:#fff;
+  overflow:hidden;
+}
+.container{
+  text-align:center;
+  padding-top:40px;
+  color:#fff;
+}
+.title{
+  font-size:32px;
+  font-weight:800;
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#ff4e4e,#ffb94a);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.subtitle{
+  color:#ff6c6c;
+  margin-top:4px;
+  letter-spacing:2px;
+  font-weight:600;
+  font-size:13px;
+}
+.timer{
+  font-size:26px;
+  font-weight:800;
+  color:#ffd95a;
+  margin:20px 0;
+}
+.circle{
+  width:120px;
+  height:120px;
+  margin:0 auto;
+  border-radius:50%;
+  border:6px solid rgba(255,200,40,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ffcd55;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 0 25px rgba(255,160,40,0.2);
+}
+.box{
+  margin-top:30px;
+  border:2px solid rgba(255,150,30,0.25);
+  border-radius:18px;
+  padding:25px;
+  width:300px;
+  max-width:85%;
+  background:rgba(255,110,40,0.05);
+  margin-left:auto;
+  margin-right:auto;
+}
+.wait{
+  font-size:36px;
+  font-weight:900;
+  letter-spacing:3px;
+  background:linear-gradient(90deg,#ff9c45,#ff4646);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.prediction{
+  margin-top:16px;
+  height:65px;
+  background:#5a0606;
+  border:5px dashed rgba(255,190,60,0.3);
+  border-radius:12px;
+  color:#ffce7a;
+  font-size:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  letter-spacing:6px;
+}
+.history{
+  margin-top:25px;
+  width:320px;
+  max-width:90%;
+  margin-left:auto;
+  margin-right:auto;
+  border-radius:14px;
+  background:rgba(255,160,50,0.05);
+  padding:10px;
+  border:1px solid rgba(255,150,30,0.15);
+}
+.history-header,.history-item{
+  display:flex;
+  justify-content:space-between;
+  font-weight:700;
+  font-size:13px;
+  padding:6px 8px;
+}
+.history-header{
+  color:#ffd86b;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  margin-bottom:6px;
+}
+.history-item{color:#ffecad;}
+.signal.big{color:#ff6b6b;}
+.signal.small{color:#9ee19e;}
+.join{
+  margin-top:25px;
+  display:inline-block;
+  background:linear-gradient(90deg,#ff6b6b,#ffb34a);
+  color:#1b0703;
+  padding:12px 36px;
+  border-radius:28px;
+  font-weight:900;
+  text-decoration:none;
+  letter-spacing:2px;
+  box-shadow:0 0 20px rgba(255,150,30,0.2);
+}
+.bg-particles{
+  position:absolute;
+  top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle,#1a0a00 0%,#000000 90%);
+  overflow:hidden;z-index:-1;
+}
+</style>
+</head>
+<body>
+<div class="bg-particles"></div>
+<div class="container">
+  <div class="title">SHIVAM PRO PNL</div>
+  <div class="subtitle">WINGO 30S PVT SARVER</div>
+  <div class="timer" id="clock">--:--:--</div>
+
+  <div class="circle" id="countdown">00:30</div>
+
+  <div class="box">
+    <div class="wait">WAIT...</div>
+    <div class="prediction" id="prediction">-- --</div>
+  </div>
+
+  <div class="history">
+    <div class="history-header">
+      <div>TIME</div><div>SIGNAL</div><div>NUMBERS</div>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+  <a href="#" class="join" onclick="alert('Join Telegram link placeholder');return false;">JOIN TELEGRAM</a>
+</div>
+
+<script>
+let remaining = 30;
+const countdown = document.getElementById("countdown");
+const prediction = document.getElementById("prediction");
+const historyList = document.getElementById("historyList");
+const clock = document.getElementById("clock");
+
+function updateClock(){
+  const d = new Date();
+  clock.textContent = d.toLocaleTimeString();
+}
+setInterval(updateClock,1000);
+updateClock();
+
+function fmt(sec){
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function genNumbers(){
+  const a = Math.floor(Math.random()*90)+10;
+  const b = Math.floor(Math.random()*90)+10;
+  return `${a} ${b}`;
+}
+
+function addHistory(signal,numbers){
+  const time = new Date().toLocaleTimeString();
+  const div = document.createElement("div");
+  div.className="history-item";
+  div.innerHTML=`<div>${time}</div><div class="signal ${signal.toLowerCase()}">${signal}</div><div>${numbers}</div>`;
+  historyList.prepend(div);
+  if(historyList.children.length>10)historyList.removeChild(historyList.lastChild);
+}
+
+function producePrediction(){
+  const signal = Math.random()>0.5 ? "BIG" : "SMALL";
+  prediction.textContent=signal;
+  prediction.className="prediction "+signal.toLowerCase();
+  addHistory(signal,genNumbers());
+}
+
+producePrediction(); // initial prediction
+
+setInterval(()=>{
+  remaining--;
+  if(remaining<=0){
+    producePrediction();
+    remaining=30;
+  }
+  countdown.textContent=fmt(remaining);
+},1000);
+</script>
+</body>
+  </html>
